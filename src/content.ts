@@ -46,6 +46,41 @@ function isHealthCheckMessage(message: any): message is HealthCheckMessage {
   );
 }
 
+/**
+ * Sanitize incoming message to prevent code injection
+ * @param message - The message to sanitize
+ * @returns Sanitized message or null if invalid
+ */
+function sanitizeMessage(message: any): any {
+  if (!message || typeof message !== 'object') {
+    return null;
+  }
+
+  // Only allow specific action types
+  const allowedActions = ['INJECT_TOUKON', 'HEALTH_CHECK'];
+  const action = String(message.action).replace(/[^A-Z_]/g, '');
+
+  if (!allowedActions.includes(action)) {
+    return null;
+  }
+
+  // Sanitize based on message type
+  if (action === 'INJECT_TOUKON') {
+    return {
+      action,
+      timestamp: Number(message.timestamp) || Date.now(),
+      ...(message.tabId && { tabId: Number(message.tabId) }),
+    };
+  } else if (action === 'HEALTH_CHECK') {
+    return {
+      action,
+      timestamp: Number(message.timestamp) || Date.now(),
+    };
+  }
+
+  return null;
+}
+
 class ToukonError extends Error {
   constructor(
     message: string,
@@ -524,11 +559,25 @@ const toukonScript = new ToukonContentScript();
 // Listen for messages from popup/background script
 chrome.runtime.onMessage.addListener((message: any, _sender, sendResponse) => {
   try {
+    // Sanitize and validate message before processing
+    const sanitizedMessage = sanitizeMessage(message);
+    if (!sanitizedMessage) {
+      const errorResponse: StatusMessage = {
+        action: 'STATUS_UPDATE',
+        replacementCount: 0,
+        success: false,
+        error: 'Invalid message format',
+        timestamp: Date.now(),
+      };
+      sendResponse(errorResponse);
+      return true;
+    }
+
     // Route message to appropriate handler
-    if (isToukonMessage(message)) {
-      handleToukonMessage(message, sendResponse);
-    } else if (isHealthCheckMessage(message)) {
-      handleHealthCheckMessage(message, sendResponse);
+    if (isToukonMessage(sanitizedMessage)) {
+      handleToukonMessage(sanitizedMessage, sendResponse);
+    } else if (isHealthCheckMessage(sanitizedMessage)) {
+      handleHealthCheckMessage(sanitizedMessage, sendResponse);
     } else {
       // Invalid message format
       const errorResponse: StatusMessage = {

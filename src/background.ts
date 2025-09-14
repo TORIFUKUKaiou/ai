@@ -360,7 +360,10 @@ class ToukonBackgroundScript implements BackgroundScript {
         reject(new MessagePassingError('Message timeout'));
       }, timeout);
 
-      chrome.tabs.sendMessage(tabId, message, (response) => {
+      // Sanitize message before sending to prevent code injection
+      const sanitizedMessage = this.sanitizeMessage(message);
+
+      chrome.tabs.sendMessage(tabId, sanitizedMessage, (response) => {
         clearTimeout(timeoutId);
 
         if (chrome.runtime.lastError) {
@@ -374,6 +377,23 @@ class ToukonBackgroundScript implements BackgroundScript {
         }
       });
     });
+  }
+
+  /**
+   * Sanitize message to prevent code injection
+   * @param message - The message to sanitize
+   * @returns Sanitized message
+   */
+  private sanitizeMessage(message: ToukonMessage): ToukonMessage {
+    // Action comes from trusted internal code; keep the literal type
+    const action: ToukonMessage['action'] = 'INJECT_TOUKON';
+    const timestamp = Number(message.timestamp) || Date.now();
+    const tabId =
+      typeof message.tabId === 'number' && Number.isFinite(message.tabId)
+        ? message.tabId
+        : undefined;
+
+    return tabId !== undefined ? { action, timestamp, tabId } : { action, timestamp };
   }
 
   /**
