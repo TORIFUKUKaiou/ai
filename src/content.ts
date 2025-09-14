@@ -51,31 +51,27 @@ function isHealthCheckMessage(message: any): message is HealthCheckMessage {
  * @param message - The message to sanitize
  * @returns Sanitized message or null if invalid
  */
-function sanitizeMessage(message: any): any {
-  if (!message || typeof message !== 'object') {
-    return null;
-  }
+function sanitizeMessage(raw: unknown): ToukonMessage | HealthCheckMessage | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const obj = raw as Record<string, unknown>;
 
-  // Only allow specific action types
-  const allowedActions = ['INJECT_TOUKON', 'HEALTH_CHECK'];
-  const action = String(message.action).replace(/[^A-Z_]/g, '');
+  const unsafeAction = obj['action'];
+  const action = typeof unsafeAction === 'string' ? unsafeAction.replace(/[^A-Z_]/g, '') : '';
 
-  if (!allowedActions.includes(action)) {
-    return null;
-  }
-
-  // Sanitize based on message type
   if (action === 'INJECT_TOUKON') {
-    return {
-      action,
-      timestamp: Number(message.timestamp) || Date.now(),
-      ...(message.tabId && { tabId: Number(message.tabId) }),
-    };
-  } else if (action === 'HEALTH_CHECK') {
-    return {
-      action,
-      timestamp: Number(message.timestamp) || Date.now(),
-    };
+    const tsRaw = obj['timestamp'];
+    const ts = typeof tsRaw === 'number' ? tsRaw : Number(tsRaw);
+    const tabRaw = obj['tabId'];
+    const tabId = typeof tabRaw === 'number' && Number.isFinite(tabRaw) ? tabRaw : undefined;
+    return tabId !== undefined
+      ? { action: 'INJECT_TOUKON', timestamp: Number.isFinite(ts) ? ts : Date.now(), tabId }
+      : { action: 'INJECT_TOUKON', timestamp: Number.isFinite(ts) ? ts : Date.now() };
+  }
+
+  if (action === 'HEALTH_CHECK') {
+    const tsRaw = obj['timestamp'];
+    const ts = typeof tsRaw === 'number' ? tsRaw : Number(tsRaw);
+    return { action: 'HEALTH_CHECK', timestamp: Number.isFinite(ts) ? ts : Date.now() };
   }
 
   return null;
@@ -557,10 +553,10 @@ class ToukonContentScript {
 const toukonScript = new ToukonContentScript();
 
 // Listen for messages from popup/background script
-chrome.runtime.onMessage.addListener((message: any, _sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((raw: unknown, _sender, sendResponse) => {
   try {
     // Sanitize and validate message before processing
-    const sanitizedMessage = sanitizeMessage(message);
+    const sanitizedMessage = sanitizeMessage(raw);
     if (!sanitizedMessage) {
       const errorResponse: StatusMessage = {
         action: 'STATUS_UPDATE',
