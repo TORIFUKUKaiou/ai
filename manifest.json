@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "闘魂AI変換",
+  "version": "1.0.0",
+  "description": "Inject Toukon spirit by transforming AI to AI（アントニオ猪木）",
+  "permissions": ["activeTab"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "闘魂AI変換 - Inject Toukon Spirit"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}

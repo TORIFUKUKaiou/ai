@@ -1,0 +1,238 @@
+/* 闘魂AI変換 Popup Styles - Embodying the spirit of Toukon */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN',
+    'Noto Sans CJK JP', sans-serif;
+  background: #000000; /* Depth of self-reflection */
+  color: #ffffff; /* Clarity of purpose */
+  width: 320px;
+  min-height: 240px;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+  padding: 20px;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+  position: relative;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #dc143c 0%, #ff4757 50%, #dc143c 100%);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #cccccc;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.inject-button {
+  background: linear-gradient(135deg, #dc143c 0%, #b71c1c 100%);
+  border: 2px solid #dc143c;
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+  box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+  position: relative;
+  overflow: hidden;
+  min-width: 140px;
+}
+
+.inject-button:hover {
+  background: linear-gradient(135deg, #ff1744 0%, #dc143c 100%);
+  border-color: #ff1744;
+  box-shadow: 0 6px 16px rgba(220, 20, 60, 0.4);
+  transform: translateY(-1px);
+}
+
+.inject-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(220, 20, 60, 0.3);
+}
+
+.inject-button:disabled {
+  background: #333333;
+  border-color: #555555;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.inject-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.inject-button:hover::before {
+  left: 100%;
+}
+
+.button-text {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffffff;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
+}
+
+.status {
+  text-align: center;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-text {
+  font-size: 12px;
+  color: #cccccc;
+  transition: color 0.3s ease;
+}
+
+.status.success .status-text {
+  color: #4caf50;
+}
+
+.status.error .status-text {
+  color: #ff5722;
+}
+
+.status.processing .status-text {
+  color: #dc143c;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Reduce motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .status.processing .status-text {
+    animation: none;
+  }
+}
+
+/* Stronger focus outline for accessibility */
+.inject-button:focus-visible {
+  outline: 3px solid rgba(220, 20, 60, 0.7);
+  outline-offset: 3px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #333333;
+}
+
+.philosophy {
+  font-size: 10px;
+  color: #888888;
+  font-style: italic;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 320px) {
+  .container {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .inject-button {
+    padding: 10px 20px;
+    min-width: 120px;
+  }
+
+  .button-text {
+    font-size: 13px;
+  }
+}
+
+/* Focus styles for accessibility */
+.inject-button:focus {
+  outline: 2px solid #dc143c;
+  outline-offset: 2px;
+}
+
+.inject-button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .container {
+    background: #000000;
+    border: 1px solid #ffffff;
+  }
+
+  .inject-button {
+    border-width: 3px;
+  }
+}
