@@ -126,7 +126,7 @@ class ToukonPopupController {
 
     try {
       this.updateStatus('闘魂注入中...', 'processing');
-      this.injectButton.disabled = true;
+      this.injectButton!.disabled = true;
 
       for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
         try {

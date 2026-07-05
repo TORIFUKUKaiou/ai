@@ -21,11 +21,6 @@ type HealthCheckResponse = {
   timestamp: number;
   error?: string;
 };
-type ExtensionConfig = {
-  readonly TARGET_TEXT: string;
-  readonly REPLACEMENT_TEXT: string;
-  readonly ANIMATION_DURATION: number;
-};
 
 function isToukonMessage(message: any): message is ToukonMessage {
   return (
@@ -94,13 +89,6 @@ class ContentScriptError extends ToukonError {
     this.name = 'ContentScriptError';
   }
 }
-
-// Configuration constants
-const EXTENSION_CONFIG: ExtensionConfig = {
-  TARGET_TEXT: 'AI',
-  REPLACEMENT_TEXT: 'AI（アントニオ猪木）',
-  ANIMATION_DURATION: 300,
-} as const;
 
 /**
  * Main ContentScript class implementing text replacement functionality

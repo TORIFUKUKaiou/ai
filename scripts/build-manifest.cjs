@@ -22,16 +22,20 @@ function writeJSON(p, data) {
 function transformManifest(manifest) {
   const out = { ...manifest };
   if (out.action && out.action.default_popup) {
-    out.action = { ...out.action, default_popup: 'popup.html' };
+    out.action = { ...out.action, default_popup: out.action.default_popup.replace(/\.ts$/, '.js') };
   }
   if (out.background && out.background.service_worker) {
-    out.background = { ...out.background, service_worker: 'background.js', type: 'module' };
+    out.background = {
+      ...out.background,
+      service_worker: out.background.service_worker.replace(/\.ts$/, '.js'),
+      type: 'module',
+    };
   }
   if (Array.isArray(out.content_scripts)) {
     out.content_scripts = out.content_scripts.map((cs) => {
       const next = { ...cs };
       if (Array.isArray(next.js)) {
-        next.js = next.js.map(() => 'content.js');
+        next.js = next.js.map((file) => file.replace(/\.ts$/, '.js'));
       }
       return next;
     });

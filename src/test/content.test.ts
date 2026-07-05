@@ -570,7 +570,6 @@ describe('ToukonContentScript', () => {
 
     it('should throw error when document is undefined', () => {
       const originalDocument = global.document;
-      // @ts-expect-error - temporarily remove document for test
       delete global.document;
 
       expect(() => {
@@ -584,7 +583,6 @@ describe('ToukonContentScript', () => {
     it('should throw error when documentElement is not accessible', () => {
       const originalDocument = global.document;
       // Provide a minimal mock document with missing documentElement
-      // @ts-expect-error - assign mocked document for this test
       global.document = {
         readyState: 'complete',
         documentElement: null,
@@ -639,7 +637,7 @@ describe('ToukonContentScript', () => {
 
       // Mock replaceTextInNode to fail first two attempts
       const originalMethod = (contentScript as any).replaceTextInNode;
-      vi.spyOn(contentScript as any, 'replaceTextInNode').mockImplementation((node: Text) => {
+      vi.spyOn(contentScript as any, 'replaceTextInNode').mockImplementation((node: any) => {
         attemptCount++;
         if (attemptCount < 3) {
           throw new Error('Transient error');
@@ -731,7 +729,7 @@ describe('ToukonContentScript', () => {
       let callCount = 0;
       const originalMethod = (contentScript as any).replaceTextInNodeWithRetry;
       vi.spyOn(contentScript as any, 'replaceTextInNodeWithRetry').mockImplementation(
-        (node: Text) => {
+        (node: any) => {
           callCount++;
           if (callCount === 1) {
             throw new Error('First node error');

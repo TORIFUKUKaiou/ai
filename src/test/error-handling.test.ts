@@ -123,7 +123,6 @@ describe('Error Handling', () => {
       ];
 
       restrictedUrls.forEach((url) => {
-        // @ts-expect-error - mutate mocked window location for test
         global.window.location.href = url;
 
         // Test the validation logic directly
@@ -223,7 +222,7 @@ describe('Error Handling', () => {
   describe('Background Script Error Handling', () => {
     beforeEach(() => {
       // Mock additional Chrome APIs for background script
-      mockChrome.runtime.onInstalled = {
+      (mockChrome.runtime as any).onInstalled = {
         addListener: vi.fn(),
       };
     });
@@ -381,7 +380,6 @@ describe('Error Handling', () => {
         textContent: '',
       };
 
-      // @ts-expect-error - assign mocked document
       global.document = {
         getElementById: vi.fn((id) => {
           if (id === 'inject-toukon') return mockButton;
@@ -391,7 +389,7 @@ describe('Error Handling', () => {
         querySelector: vi.fn(() => mockStatusText),
         addEventListener: vi.fn(),
         body: mockStatusText,
-      };
+      } as any;
 
       // @ts-expect-error - assign mocked window
       global.window = {
