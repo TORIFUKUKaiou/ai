@@ -67,11 +67,6 @@ coverage/
 .env.test.local
 .env.production.local
 
-# Package manager lock files (keep one, remove others as needed)
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
 # Temporary folders
 tmp/
 temp/

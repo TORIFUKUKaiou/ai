@@ -244,9 +244,9 @@ describe('Error Handling', () => {
         // Test validation logic directly
         const isValid = Boolean(
           message &&
-            typeof message === 'object' &&
-            typeof message.action === 'string' &&
-            (isToukonMessage(message) || isStatusMessage(message)),
+          typeof message === 'object' &&
+          typeof message.action === 'string' &&
+          (isToukonMessage(message) || isStatusMessage(message)),
         );
 
         expect(isValid).toBe(false);

@@ -670,7 +670,7 @@ function handleHealthCheckMessage(
   try {
     // Perform comprehensive readiness checks
     let isReady = true;
-    let errorDetails: string[] = [];
+    const errorDetails: string[] = [];
 
     // Check document state
     if (document.readyState !== 'complete') {

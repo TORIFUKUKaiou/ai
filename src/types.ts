@@ -33,10 +33,7 @@ export interface HealthCheckResponse {
 
 // Union type for all possible messages
 export type ExtensionMessage =
-  | ToukonMessage
-  | StatusMessage
-  | HealthCheckMessage
-  | HealthCheckResponse;
+  ToukonMessage | StatusMessage | HealthCheckMessage | HealthCheckResponse;
 
 // Response type for message handlers
 export interface MessageResponse<T = any> {
@@ -86,42 +83,42 @@ export type StatusType = 'success' | 'error' | 'processing';
 export function isToukonMessage(message: any): message is ToukonMessage {
   return Boolean(
     message &&
-      typeof message === 'object' &&
-      message.action === 'INJECT_TOUKON' &&
-      typeof message.timestamp === 'number' &&
-      (message.tabId === undefined || typeof message.tabId === 'number'),
+    typeof message === 'object' &&
+    message.action === 'INJECT_TOUKON' &&
+    typeof message.timestamp === 'number' &&
+    (message.tabId === undefined || typeof message.tabId === 'number'),
   );
 }
 
 export function isStatusMessage(message: any): message is StatusMessage {
   return Boolean(
     message &&
-      typeof message === 'object' &&
-      message.action === 'STATUS_UPDATE' &&
-      typeof message.replacementCount === 'number' &&
-      typeof message.success === 'boolean' &&
-      (message.error === undefined || typeof message.error === 'string') &&
-      (message.timestamp === undefined || typeof message.timestamp === 'number'),
+    typeof message === 'object' &&
+    message.action === 'STATUS_UPDATE' &&
+    typeof message.replacementCount === 'number' &&
+    typeof message.success === 'boolean' &&
+    (message.error === undefined || typeof message.error === 'string') &&
+    (message.timestamp === undefined || typeof message.timestamp === 'number'),
   );
 }
 
 export function isHealthCheckMessage(message: any): message is HealthCheckMessage {
   return Boolean(
     message &&
-      typeof message === 'object' &&
-      message.action === 'HEALTH_CHECK' &&
-      typeof message.timestamp === 'number',
+    typeof message === 'object' &&
+    message.action === 'HEALTH_CHECK' &&
+    typeof message.timestamp === 'number',
   );
 }
 
 export function isHealthCheckResponse(message: any): message is HealthCheckResponse {
   return Boolean(
     message &&
-      typeof message === 'object' &&
-      message.action === 'HEALTH_CHECK_RESPONSE' &&
-      typeof message.timestamp === 'number' &&
-      (message.status === 'ready' || message.status === 'error') &&
-      (message.error === undefined || typeof message.error === 'string'),
+    typeof message === 'object' &&
+    message.action === 'HEALTH_CHECK_RESPONSE' &&
+    typeof message.timestamp === 'number' &&
+    (message.status === 'ready' || message.status === 'error') &&
+    (message.error === undefined || typeof message.error === 'string'),
   );
 }
 
