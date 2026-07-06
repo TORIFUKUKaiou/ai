@@ -891,7 +891,7 @@ describe('ToukonContentScript', () => {
         expect(count).toBe(0);
       } finally {
         // Remove the own getter so prototype accessor is restored
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         delete (document as any).body;
       }
     });

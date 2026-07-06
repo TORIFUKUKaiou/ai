@@ -15,6 +15,7 @@ build/
 # TypeScript compiled files
 *.js
 *.d.ts
+!eslint.config.js
 !public/*.js
 !scripts/*.js
 
