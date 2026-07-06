@@ -6,7 +6,7 @@ A Chrome extension that transforms "AI" text to "AI（アントニオ猪木）" 
 
 ### Prerequisites
 
-- Node.js (v16 or higher)
+- Node.js (v24 or higher)
 - npm
 
 ### Installation
@@ -17,7 +17,6 @@ npm install
 
 ### Development Scripts
 
-- `npm run dev` - Start development server with hot reload
 - `npm run build` - Build the extension for production
 - `npm run build:prod` - Build with linting and type checking
 - `npm run lint` - Run ESLint
@@ -30,16 +29,16 @@ npm install
 
 ### Building for Chrome
 
-1. Run `npm run build`
+1. Run `npm run build:prod`
 2. Load the `dist` folder as an unpacked extension in Chrome
 3. The extension will be available in your browser
 
 ### Development Workflow
 
-1. Start development server: `npm run dev`
-2. Make changes to source files
-3. The extension will automatically rebuild
-4. Reload the extension in Chrome to see changes
+1. Make changes to source files
+2. Run `npm run build:prod`
+3. Click the reload button for the extension in `chrome://extensions`
+4. Reload the target web page
 
 ### Project Structure
 
