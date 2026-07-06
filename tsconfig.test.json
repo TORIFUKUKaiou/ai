@@ -3,7 +3,8 @@
   "compilerOptions": {
     "noEmit": true,
     "target": "ESNext",
-    "module": "node16",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "types": ["chrome", "node"],
     "moduleDetection": "force",
     "strict": false,

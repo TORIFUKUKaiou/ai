@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/background.js",
   "scripts": {
-    "build": "npm run clean && tsc && npm run copy-assets && node scripts/build-manifest.cjs",
+    "build": "npm run clean && tsc && npm run copy-assets && node scripts/build-manifest.cjs && node scripts/verify-build.cjs",
     "build:prod": "npm run lint && npm run type-check && npm run type-check:test && npm run build",
     "copy-assets": "cp -r public/* dist/ && cp manifest.json dist/ || true",
     "dev": "node scripts/dev-server.cjs",
