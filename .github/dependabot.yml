@@ -6,12 +6,12 @@ registries:
     token: ${{secrets.TAKUMI_GUARD_TOKEN}}
 
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     registries:
       - takumi_guard_npm
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     cooldown:
       default-days: 5
       semver-major-days: 30
