@@ -240,14 +240,16 @@ describe('Message Passing System', () => {
         };
 
         mockChrome.tabs.query.mockResolvedValue([mockTab]);
-        mockChrome.tabs.sendMessage.mockImplementation((tabId, message, callback) => {
-          callback({
-            action: 'STATUS_UPDATE',
-            replacementCount: 3,
-            success: true,
-            timestamp: Date.now(),
-          });
-        });
+        mockChrome.tabs.sendMessage.mockImplementation(
+          (_tabId: number, _message: unknown, callback: (response: unknown) => void) => {
+            callback({
+              action: 'STATUS_UPDATE',
+              replacementCount: 3,
+              success: true,
+              timestamp: Date.now(),
+            });
+          },
+        );
 
         const message: ToukonMessage = {
           action: 'INJECT_TOUKON',
@@ -285,15 +287,17 @@ describe('Message Passing System', () => {
       it('should handle targeted tab injection', async () => {
         const targetTabId = 123;
 
-        mockChrome.tabs.sendMessage.mockImplementation((tabId, message, callback) => {
-          expect(tabId).toBe(targetTabId);
-          callback({
-            action: 'STATUS_UPDATE',
-            replacementCount: 2,
-            success: true,
-            timestamp: Date.now(),
-          });
-        });
+        mockChrome.tabs.sendMessage.mockImplementation(
+          (tabId: number, _message: unknown, callback: (response: unknown) => void) => {
+            expect(tabId).toBe(targetTabId);
+            callback({
+              action: 'STATUS_UPDATE',
+              replacementCount: 2,
+              success: true,
+              timestamp: Date.now(),
+            });
+          },
+        );
 
         const message: ToukonMessage = {
           action: 'INJECT_TOUKON',
@@ -337,9 +341,11 @@ describe('Message Passing System', () => {
 
         mockChrome.tabs.query.mockResolvedValue([mockTab]);
         mockChrome.runtime.lastError = { message: 'Could not establish connection' };
-        mockChrome.tabs.sendMessage.mockImplementation((tabId, message, callback) => {
-          callback(null);
-        });
+        mockChrome.tabs.sendMessage.mockImplementation(
+          (_tabId: number, _message: unknown, callback: (response: unknown) => void) => {
+            callback(null);
+          },
+        );
 
         await expect(backgroundScript.executeContentScript(1)).rejects.toThrow(ContentScriptError);
       });
@@ -354,9 +360,11 @@ describe('Message Passing System', () => {
         mockChrome.tabs.query.mockResolvedValue([mockTab]);
 
         // Mock a delayed response that exceeds timeout
-        mockChrome.tabs.sendMessage.mockImplementation((tabId, message, callback) => {
-          // Never call callback to simulate timeout
-        });
+        mockChrome.tabs.sendMessage.mockImplementation(
+          (_tabId: number, _message: unknown, _callback: (response: unknown) => void) => {
+            // Never call callback to simulate timeout
+          },
+        );
 
         await expect(backgroundScript.executeContentScript(1)).rejects.toThrow(MessagePassingError);
       }, 12000);
@@ -369,9 +377,11 @@ describe('Message Passing System', () => {
         };
 
         mockChrome.tabs.query.mockResolvedValue([mockTab]);
-        mockChrome.tabs.sendMessage.mockImplementation((tabId, message, callback) => {
-          callback({ invalid: 'response' });
-        });
+        mockChrome.tabs.sendMessage.mockImplementation(
+          (_tabId: number, _message: unknown, callback: (response: unknown) => void) => {
+            callback({ invalid: 'response' });
+          },
+        );
 
         await expect(backgroundScript.executeContentScript(1)).rejects.toThrow(MessagePassingError);
       });

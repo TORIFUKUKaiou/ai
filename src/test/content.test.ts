@@ -2,7 +2,7 @@
  * Unit tests for content script text replacement functionality
  */
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { ContentScriptError, ToukonError, ExtensionConfig } from '../types.js';
+import { ContentScriptError, ExtensionConfig } from '../types.js';
 
 // Mock Chrome APIs
 const mockChrome = {
@@ -570,7 +570,7 @@ describe('ToukonContentScript', () => {
 
     it('should throw error when document is undefined', () => {
       const originalDocument = global.document;
-      delete global.document;
+      Reflect.deleteProperty(globalThis, 'document');
 
       expect(() => {
         (contentScript as any).validateDocumentAccess();
@@ -757,7 +757,7 @@ describe('ToukonContentScript', () => {
       let setterCallCount = 0;
       Object.defineProperty(textNode, 'textContent', {
         get: () => (setterCallCount === 0 ? 'Test AI content' : 'Test AI content'), // Simulate rejection
-        set: (value: string) => {
+        set: (_value: string) => {
           setterCallCount++;
           // Don't actually set the value to simulate rejection
         },

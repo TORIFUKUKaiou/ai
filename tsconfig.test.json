@@ -7,11 +7,6 @@
     "moduleResolution": "bundler",
     "types": ["chrome", "node"],
     "moduleDetection": "force",
-    "strict": false,
-    "noImplicitAny": false,
-    "strictNullChecks": false,
-    "exactOptionalPropertyTypes": false,
-    "strictPropertyInitialization": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },

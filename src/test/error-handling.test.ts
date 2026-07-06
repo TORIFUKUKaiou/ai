@@ -181,7 +181,7 @@ describe('Error Handling', () => {
         },
       ];
 
-      testCases.forEach(({ name, error, expectedErrorType }) => {
+      testCases.forEach(({ error, expectedErrorType }) => {
         expect(() => {
           // Simulate text replacement failure
           throw new expectedErrorType(
@@ -289,8 +289,8 @@ describe('Error Handling', () => {
 
     it('should handle message timeout errors', () => {
       // Test timeout handling logic
-      const timeoutPromise = new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(() => {
+      const timeoutPromise = new Promise((_resolve, reject) => {
+        setTimeout(() => {
           reject(new MessagePassingError('Message timeout'));
         }, 100);
 
@@ -443,9 +443,6 @@ describe('Error Handling', () => {
 
     it('should implement retry logic for transient failures', () => {
       // Test retry logic for popup operations
-      const maxRetries = 3;
-      const attemptCount = 0;
-
       const shouldNotRetry = (error: any): boolean => {
         if (error instanceof TabAccessError) {
           return true;

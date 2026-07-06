@@ -659,7 +659,7 @@ describe('ToukonPopupController', () => {
       (popupController as any).isProcessing = true;
 
       // Mock the private method to verify it's called
-      const handleInjectClickSpy = vi.spyOn(popupController as any, 'handleInjectClick');
+      vi.spyOn(popupController as any, 'handleInjectClick');
 
       // Simulate click handler call
       await (popupController as any).handleInjectClick();
