@@ -12,6 +12,7 @@ import {
   ContentScriptError,
   MessagePassingError,
   ToukonError,
+  isStatusMessage,
 } from './types.js';
 
 // Main popup controller implementation
@@ -74,7 +75,7 @@ class ToukonPopupController implements PopupController {
   /**
    * Handle initialization errors gracefully
    */
-  private handleInitializationError(error: any): void {
+  private handleInitializationError(error: unknown): void {
     console.error('Popup initialization failed:', error);
 
     // Try to show error in any available status element
@@ -232,7 +233,7 @@ class ToukonPopupController implements PopupController {
         reject(new MessagePassingError('Message timeout'));
       }, timeout);
 
-      chrome.runtime.sendMessage(message, (response) => {
+      chrome.runtime.sendMessage(message, (response: unknown) => {
         clearTimeout(timeoutId);
 
         if (chrome.runtime.lastError) {
@@ -241,8 +242,8 @@ class ToukonPopupController implements PopupController {
               chrome.runtime.lastError.message || 'Unknown Chrome runtime error',
             ),
           );
-        } else if (!response) {
-          reject(new MessagePassingError('No response received'));
+        } else if (!isStatusMessage(response)) {
+          reject(new MessagePassingError('Invalid response received'));
         } else {
           resolve(response);
         }
@@ -253,7 +254,7 @@ class ToukonPopupController implements PopupController {
   /**
    * Determine if an error should not be retried
    */
-  private shouldNotRetry(error: any): boolean {
+  private shouldNotRetry(error: unknown): boolean {
     // Don't retry for these error types
     if (error instanceof TabAccessError) {
       return true;
@@ -277,7 +278,7 @@ class ToukonPopupController implements PopupController {
   /**
    * Handle errors with appropriate user feedback
    */
-  private handleError(error: any): void {
+  private handleError(error: unknown): void {
     console.error('Popup error:', error);
 
     let errorMessage = '注入に失敗しました';

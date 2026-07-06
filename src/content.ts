@@ -22,22 +22,26 @@ type HealthCheckResponse = {
   error?: string;
 };
 
-function isToukonMessage(message: any): message is ToukonMessage {
+type ErrorContext = Readonly<Record<string, unknown>>;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isToukonMessage(message: unknown): message is ToukonMessage {
   return (
-    !!message &&
-    typeof message === 'object' &&
-    message.action === 'INJECT_TOUKON' &&
-    typeof message.timestamp === 'number' &&
-    (message.tabId === undefined || typeof message.tabId === 'number')
+    isRecord(message) &&
+    message['action'] === 'INJECT_TOUKON' &&
+    typeof message['timestamp'] === 'number' &&
+    (message['tabId'] === undefined || typeof message['tabId'] === 'number')
   );
 }
 
-function isHealthCheckMessage(message: any): message is HealthCheckMessage {
+function isHealthCheckMessage(message: unknown): message is HealthCheckMessage {
   return (
-    !!message &&
-    typeof message === 'object' &&
-    message.action === 'HEALTH_CHECK' &&
-    typeof message.timestamp === 'number'
+    isRecord(message) &&
+    message['action'] === 'HEALTH_CHECK' &&
+    typeof message['timestamp'] === 'number'
   );
 }
 
@@ -76,7 +80,7 @@ class ToukonError extends Error {
   constructor(
     message: string,
     public readonly code: string,
-    public readonly context?: any,
+    public readonly context?: ErrorContext,
   ) {
     super(message);
     this.name = 'ToukonError';
@@ -84,7 +88,7 @@ class ToukonError extends Error {
 }
 
 class ContentScriptError extends ToukonError {
-  constructor(message: string, context?: any) {
+  constructor(message: string, context?: ErrorContext) {
     super(message, 'CONTENT_SCRIPT_ERROR', context);
     this.name = 'ContentScriptError';
   }
@@ -620,11 +624,11 @@ function handleToukonMessage(
       errorCode = error.code;
 
       // Provide user-friendly error messages based on error type
-      if (error.context?.restriction === 'browser_page') {
+      if (error.context?.['restriction'] === 'browser_page') {
         errorMessage = 'Cannot inject Toukon on browser pages. Please try on a regular website.';
-      } else if (error.context?.context === 'document_undefined') {
+      } else if (error.context?.['context'] === 'document_undefined') {
         errorMessage = 'Page content is not accessible. Please refresh and try again.';
-      } else if (error.context?.documentState === 'loading') {
+      } else if (error.context?.['documentState'] === 'loading') {
         errorMessage = 'Page is still loading. Please wait and try again.';
       }
     } else if (error instanceof ToukonError) {

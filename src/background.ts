@@ -12,6 +12,7 @@ import {
   BackgroundScript,
   TabInfo,
   isToukonMessage,
+  isStatusMessage,
   isHealthCheckMessage,
   isValidExtensionMessage,
   ToukonError,
@@ -33,7 +34,7 @@ class ToukonBackgroundScript implements BackgroundScript {
    */
   private initializeMessageHandlers(): void {
     // Listen for messages from popup and content scripts
-    chrome.runtime.onMessage.addListener((message: any, sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) => {
       // Enhanced message routing with proper validation
       this.routeMessage(message, sender, sendResponse);
       return true; // Always return true for async response handling
@@ -47,9 +48,9 @@ class ToukonBackgroundScript implements BackgroundScript {
    * @param sendResponse - The response callback function
    */
   private routeMessage(
-    message: any,
+    message: unknown,
     sender: chrome.runtime.MessageSender,
-    sendResponse: (response: any) => void,
+    sendResponse: (response?: unknown) => void,
   ): void {
     try {
       // Validate message format first
@@ -122,16 +123,7 @@ class ToukonBackgroundScript implements BackgroundScript {
    * @param message - The message to validate
    * @returns True if message is valid
    */
-  private validateMessage(message: any): boolean {
-    if (!message || typeof message !== 'object') {
-      return false;
-    }
-
-    // Check for required action field
-    if (typeof message.action !== 'string') {
-      return false;
-    }
-
+  private validateMessage(message: unknown): boolean {
     // Use type guards for specific validation
     return isValidExtensionMessage(message);
   }
@@ -141,7 +133,7 @@ class ToukonBackgroundScript implements BackgroundScript {
    * @param error - The error to process
    * @returns User-friendly error message
    */
-  public getErrorMessage(error: any): string {
+  public getErrorMessage(error: unknown): string {
     if (error instanceof TabAccessError) {
       return 'このページでは使用できません';
     } else if (error instanceof ContentScriptError) {
@@ -232,14 +224,14 @@ class ToukonBackgroundScript implements BackgroundScript {
       }
 
       const info: TabInfo = {
-        id: currentTab.id as number,
-      } as TabInfo;
+        id: currentTab.id,
+      };
 
       if (typeof currentTab.url === 'string') {
-        (info as any).url = currentTab.url;
+        info.url = currentTab.url;
       }
       if (typeof currentTab.title === 'string') {
-        (info as any).title = currentTab.title;
+        info.title = currentTab.title;
       }
 
       return info;
@@ -354,7 +346,7 @@ class ToukonBackgroundScript implements BackgroundScript {
     tabId: number,
     message: ToukonMessage,
     timeout: number,
-  ): Promise<StatusMessage> {
+  ): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => {
         reject(new MessagePassingError('Message timeout'));
@@ -401,14 +393,8 @@ class ToukonBackgroundScript implements BackgroundScript {
    * @param response - The response to validate
    * @returns True if response is valid
    */
-  private validateStatusResponse(response: any): response is StatusMessage {
-    return (
-      response &&
-      typeof response === 'object' &&
-      response.action === 'STATUS_UPDATE' &&
-      typeof response.replacementCount === 'number' &&
-      typeof response.success === 'boolean'
-    );
+  private validateStatusResponse(response: unknown): response is StatusMessage {
+    return isStatusMessage(response);
   }
 }
 

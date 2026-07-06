@@ -36,7 +36,7 @@ export type ExtensionMessage =
   ToukonMessage | StatusMessage | HealthCheckMessage | HealthCheckResponse;
 
 // Response type for message handlers
-export interface MessageResponse<T = any> {
+export interface MessageResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -79,51 +79,53 @@ export interface PopupController {
 // Status types for UI feedback
 export type StatusType = 'success' | 'error' | 'processing';
 
+export type ErrorContext = Readonly<Record<string, unknown>>;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
 // Message validation functions with enhanced type checking
-export function isToukonMessage(message: any): message is ToukonMessage {
-  return Boolean(
-    message &&
-    typeof message === 'object' &&
-    message.action === 'INJECT_TOUKON' &&
-    typeof message.timestamp === 'number' &&
-    (message.tabId === undefined || typeof message.tabId === 'number'),
+export function isToukonMessage(message: unknown): message is ToukonMessage {
+  return (
+    isRecord(message) &&
+    message['action'] === 'INJECT_TOUKON' &&
+    typeof message['timestamp'] === 'number' &&
+    (message['tabId'] === undefined || typeof message['tabId'] === 'number')
   );
 }
 
-export function isStatusMessage(message: any): message is StatusMessage {
-  return Boolean(
-    message &&
-    typeof message === 'object' &&
-    message.action === 'STATUS_UPDATE' &&
-    typeof message.replacementCount === 'number' &&
-    typeof message.success === 'boolean' &&
-    (message.error === undefined || typeof message.error === 'string') &&
-    (message.timestamp === undefined || typeof message.timestamp === 'number'),
+export function isStatusMessage(message: unknown): message is StatusMessage {
+  return (
+    isRecord(message) &&
+    message['action'] === 'STATUS_UPDATE' &&
+    typeof message['replacementCount'] === 'number' &&
+    typeof message['success'] === 'boolean' &&
+    (message['error'] === undefined || typeof message['error'] === 'string') &&
+    (message['timestamp'] === undefined || typeof message['timestamp'] === 'number')
   );
 }
 
-export function isHealthCheckMessage(message: any): message is HealthCheckMessage {
-  return Boolean(
-    message &&
-    typeof message === 'object' &&
-    message.action === 'HEALTH_CHECK' &&
-    typeof message.timestamp === 'number',
+export function isHealthCheckMessage(message: unknown): message is HealthCheckMessage {
+  return (
+    isRecord(message) &&
+    message['action'] === 'HEALTH_CHECK' &&
+    typeof message['timestamp'] === 'number'
   );
 }
 
-export function isHealthCheckResponse(message: any): message is HealthCheckResponse {
-  return Boolean(
-    message &&
-    typeof message === 'object' &&
-    message.action === 'HEALTH_CHECK_RESPONSE' &&
-    typeof message.timestamp === 'number' &&
-    (message.status === 'ready' || message.status === 'error') &&
-    (message.error === undefined || typeof message.error === 'string'),
+export function isHealthCheckResponse(message: unknown): message is HealthCheckResponse {
+  return (
+    isRecord(message) &&
+    message['action'] === 'HEALTH_CHECK_RESPONSE' &&
+    typeof message['timestamp'] === 'number' &&
+    (message['status'] === 'ready' || message['status'] === 'error') &&
+    (message['error'] === undefined || typeof message['error'] === 'string')
   );
 }
 
 // Generic message validator
-export function isValidExtensionMessage(message: any): message is ExtensionMessage {
+export function isValidExtensionMessage(message: unknown): message is ExtensionMessage {
   return (
     isToukonMessage(message) ||
     isStatusMessage(message) ||
@@ -137,7 +139,7 @@ export class ToukonError extends Error {
   constructor(
     message: string,
     public readonly code: string,
-    public readonly context?: any,
+    public readonly context?: ErrorContext,
   ) {
     super(message);
     this.name = 'ToukonError';
@@ -145,21 +147,21 @@ export class ToukonError extends Error {
 }
 
 export class TabAccessError extends ToukonError {
-  constructor(message: string, context?: any) {
+  constructor(message: string, context?: ErrorContext) {
     super(message, 'TAB_ACCESS_ERROR', context);
     this.name = 'TabAccessError';
   }
 }
 
 export class ContentScriptError extends ToukonError {
-  constructor(message: string, context?: any) {
+  constructor(message: string, context?: ErrorContext) {
     super(message, 'CONTENT_SCRIPT_ERROR', context);
     this.name = 'ContentScriptError';
   }
 }
 
 export class MessagePassingError extends ToukonError {
-  constructor(message: string, context?: any) {
+  constructor(message: string, context?: ErrorContext) {
     super(message, 'MESSAGE_PASSING_ERROR', context);
     this.name = 'MessagePassingError';
   }
