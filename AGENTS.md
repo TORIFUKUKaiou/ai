@@ -43,6 +43,7 @@ Manifest V3 content scripts declared in `manifest.json` are loaded as **classic 
 ### Error Handling Pattern
 
 All components use the custom error hierarchy from `types.ts`:
+
 - `TabAccessError` — restricted pages or missing tabs.
 - `ContentScriptError` — DOM not ready, permission issues, injection failures.
 - `MessagePassingError` — timeouts, invalid responses, Chrome runtime errors.
