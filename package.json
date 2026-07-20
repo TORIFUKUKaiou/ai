@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/chrome": "^0.2.2",
     "@types/node": "^26.1.0",
-    "@vitest/ui": "^4.1.9",
+    "@vitest/ui": "^4.1.10",
     "eslint": "^10.6.0",
     "@eslint/js": "10.0.1",
     "eslint-config-prettier": "^10.1.8",
