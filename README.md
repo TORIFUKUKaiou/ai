@@ -15,6 +15,15 @@ A Chrome extension that transforms "AI" text to "AI（アントニオ猪木）" 
 npm install
 ```
 
+### TypeScript compiler and linting API
+
+This project uses the [official TypeScript 6/7 side-by-side setup](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0):
+
+- `@typescript/native` aliases TypeScript 7 and provides `tsc` for builds and type checking.
+- `typescript` aliases `@typescript/typescript6` and provides the TypeScript 6 API required by `typescript-eslint`, plus the `tsc6` executable.
+
+Keep these aliases until the linting tools support the native compiler API. Replacing the `typescript` alias with TypeScript 7 breaks their peer dependency requirements. Installation uses the existing `.npmrc` settings, including `ignore-scripts=true` and `min-release-age=7`.
+
 ### Development Scripts
 
 - `npm run build` - Build the extension for production
